@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CD Grace Period Calculator — Your Penalty-Free Exit Window | GraceWindow</title>
+<meta name="description" content="Free tool: when your CD matures you get a short grace window — usually 7–10 days — to move your money penalty-free before it auto-renews at whatever rate the bank picks. Know your window." />
+<link rel="canonical" href="https://ababa1326.github.io/gracewindow/" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<meta name="theme-color" content="#1f6a72" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="GraceWindow" />
+<meta property="og:url" content="https://ababa1326.github.io/gracewindow/" />
+<meta property="og:title" content="CD Grace Period Calculator — Your Penalty-Free Exit Window" />
+<meta property="og:description" content="Free tool: when your CD matures you get a short grace window — usually 7–10 days — to move your money penalty-free before it auto-renews at whatever rate the bank picks. Know your window." />
+<meta property="og:image" content="https://ababa1326.github.io/gracewindow/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="CD Grace Period Calculator — Your Penalty-Free Exit Window" />
+<meta name="twitter:description" content="Know the short penalty-free window after your CD matures, before it auto-renews for another term." />
+<meta name="twitter:image" content="https://ababa1326.github.io/gracewindow/og.png" />
+<style>
+  :root {
+    --ink: #14110f;
+    --paper: #faf7f2;
+    --line: #e6ddd0;
+    --muted: #8a7f72;
+    --accent: #1f6a72;
+    --accent-soft: #e1eef0;
+    --warn: #c4622d;
+    --warn-soft: #f6e6db;
+    --danger: #b13636;
+    --shadow: 0 1px 0 rgba(20,17,15,0.04), 0 12px 40px -20px rgba(20,17,15,0.25);
+    --mono: "SF Mono", "Roboto Mono", ui-monospace, "Cascadia Code", Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 22px; }
+
+  header.top {
+    border-bottom: 1px solid var(--line);
+    padding: 18px 0;
+  }
+  .brand {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .brand b { color: var(--ink); font-weight: 600; }
+  .brand .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; }
+
+  .hero { padding: 58px 0 34px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(30px, 6vw, 46px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    font-weight: 680;
+    margin-bottom: 18px;
+  }
+  h1 .quiet { color: var(--muted); font-weight: 680; }
+  .lede {
+    font-size: 18px;
+    color: #4a443c;
+    max-width: 52ch;
+  }
+
+  .calc {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin: 8px 0 14px;
+  }
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .field {
+    padding: 20px;
+    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+  }
+  .field:nth-child(even) { border-right: none; }
+  .field.full { grid-column: 1 / -1; border-right: none; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin-bottom: 9px;
+  }
+  .field .hint { color: var(--muted); font-weight: 400; }
+  .input-mono {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 19px;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    outline: none;
+    padding: 0;
+  }
+  .input-mono::placeholder { color: #cabfae; }
+  .input-wrap { display: flex; align-items: baseline; gap: 6px; }
+  .input-wrap .pre, .input-wrap .post { font-family: var(--mono); font-size: 19px; color: var(--muted); }
+  input[type="date"].input-mono { font-size: 16px; }
+  .date-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 16px;
+  }
+  .date-pair > div { min-width: 0; }
+  .date-pair label { min-height: 39px; }
+  .rate-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    margin-top: 16px;
+  }
+  .rate-grid > div { min-width: 0; }
+  .rate-grid label { min-height: 39px; }
+
+  .target-row {
+    grid-column: 1 / -1;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .target-row label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 9px; }
+  .seg { display: flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+  .seg button {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 7px 13px;
+    background: #fff;
+    border: none;
+    border-right: 1px solid var(--line);
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .seg button:last-child { border-right: none; }
+  .seg button.on { background: var(--accent); color: #fff; }
+  .check-label {
+    display: flex !important;
+    gap: 10px;
+    align-items: flex-start;
+    cursor: pointer;
+    margin: 0 !important;
+  }
+  .check-label input { accent-color: var(--accent); margin-top: 3px; width: 16px; height: 16px; flex: 0 0 auto; }
+
+  .result {
+    border-top: 2px solid var(--ink);
+    padding: 26px 22px;
+    background: var(--accent-soft);
+  }
+  .result.over { background: var(--warn-soft); }
+  .result.empty { background: #f3efe7; }
+  .result-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .result-main {
+    font-size: clamp(22px, 5vw, 30px);
+    letter-spacing: -0.01em;
+    line-height: 1.18;
+    font-weight: 640;
+  }
+  .result-main .amt { color: var(--accent); }
+  .result.over .result-main .amt { color: var(--warn); }
+  .result-sub { margin-top: 12px; font-size: 15px; color: #4a443c; }
+  .result-sub b { font-weight: 640; }
+  .est-note { margin-top: 12px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .est-note b { color: var(--accent); font-weight: 640; }
+  .ics-btn {
+    display: inline-block; margin-top: 16px; padding: 9px 14px;
+    font-family: var(--mono); font-size: 13px; color: var(--accent);
+    background: #fff; border: 1px solid var(--accent); border-radius: 9px;
+    cursor: pointer; text-decoration: none;
+  }
+  .ics-btn:hover { background: var(--accent); color: #fff; }
+  .ics-hint { display: block; margin-top: 6px; font-size: 12px; color: var(--muted); }
+  .cliff-note {
+    margin-top: 16px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(177, 54, 54, 0.09);
+    color: var(--danger);
+    font-size: 13px;
+  }
+
+  .bar-block { margin-top: 20px; }
+  .bar-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; }
+  .bar-top .u-now { font-family: var(--mono); font-size: 14px; font-weight: 600; }
+  .bar-top .u-cap { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .bar {
+    height: 12px;
+    border-radius: 7px;
+    background: #ded5c7;
+    position: relative;
+    overflow: visible;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 7px;
+    background: var(--accent);
+    transition: width 0.5s cubic-bezier(.4,0,.2,1), background 0.3s;
+    width: 0%;
+  }
+  .bar-fill.warn { background: var(--warn); }
+  .bar-fill.danger { background: var(--danger); }
+  .bar-target {
+    position: absolute; top: -3px; bottom: -3px; width: 2px;
+    background: var(--ink); right: 0;
+  }
+  .bar-target::after {
+    content: attr(data-label);
+    position: absolute; top: -17px; right: 0;
+    font-family: var(--mono); font-size: 10px; color: var(--ink); white-space: nowrap;
+  }
+
+  main.prose { padding: 18px 0 70px; }
+  .prose h2 {
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    margin: 44px 0 14px;
+    font-weight: 660;
+  }
+  .prose h2 .num {
+    font-family: var(--mono); font-size: 13px; color: var(--accent);
+    margin-right: 10px; vertical-align: 2px;
+  }
+  .prose p { margin-bottom: 14px; color: #383229; font-size: 16.5px; }
+  .prose p .k { font-weight: 640; color: var(--ink); }
+  .prose a { color: var(--accent); font-weight: 640; }
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: #fff;
+    border-radius: 0 10px 10px 0;
+    padding: 16px 18px;
+    margin: 18px 0;
+    font-size: 15.5px;
+    box-shadow: var(--shadow);
+  }
+  .callout .tag {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px;
+  }
+
+  .timeline {
+    margin: 22px 0 8px;
+    padding: 22px 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+  }
+  .tl-track { position: relative; height: 3px; background: var(--line); margin: 30px 4px 70px; }
+  .tl-fill { position: absolute; height: 3px; background: var(--accent); left: 0; width: 0%; }
+  .tl-node { position: absolute; top: -6px; width: 15px; height: 15px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); transform: translateX(-50%); }
+  .tl-node.warning { border-color: var(--muted); }
+  .tl-node.today { top: -3px; width: 9px; height: 9px; border: none; background: var(--ink); }
+  .tl-lab { position: absolute; bottom: -64px; font-size: 11px; width: 150px; }
+  .tl-lab .d { font-family: var(--mono); font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px; }
+  .tl-lab .t { color: var(--muted); display: block; line-height: 1.3; }
+  .tl-lab.at-start { left: 0; text-align: left; }
+  .tl-lab.at-mid { transform: translateX(-50%); text-align: center; }
+  .tl-lab.at-end { right: 0; text-align: right; }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 26px 0 40px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  footer p { margin-bottom: 8px; }
+  footer .disc { font-size: 12px; line-height: 1.6; }
+
+  @media (max-width: 560px) {
+    .calc-grid, .date-pair, .target-row, .rate-grid { grid-template-columns: 1fr; }
+    .field { border-right: none; }
+    .date-pair { gap: 18px; }
+    .date-pair label { min-height: 0; }
+    .rate-grid { gap: 18px; }
+    .rate-grid label { min-height: 0; }
+    .hero { padding: 40px 0 26px; }
+  }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "GraceWindow",
+      "url": "https://ababa1326.github.io/gracewindow/",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "description": "Free calculator that shows the penalty-free grace period after a CD matures and compares renewal rates with better available rates.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a CD grace period?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A CD grace period is the short window after maturity, typically 7 to 10 days, when you can withdraw, move, change, or add funds without an early-withdrawal penalty." }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if my CD auto-renews?",
+          "acceptedAnswer": { "@type": "Answer", "text": "If you do nothing before the grace period ends, the bank usually renews the CD for the same term at its current renewal rate, which may be lower than your old rate." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I take money out of a CD when it matures?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. During the grace period after maturity, you can generally take money out without an early-withdrawal penalty. Confirm the exact window with your bank." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it worth breaking a CD early for a better rate?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It can be if the extra interest from the better rate exceeds the early-withdrawal penalty. Compare the exact penalty with the expected rate gain before deciding." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div class="brand"><span class="dot"></span> Grace<b>Window</b></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Maturity date · then the clock starts</div>
+      <h1>Your CD's exit door is open for about a week. <span class="quiet">Then it locks for another term.</span></h1>
+      <p class="lede">When a CD matures, most banks give you a 7–10 day grace period to withdraw, move, or change it penalty-free. Do nothing and it auto-renews at whatever rate they're offering that day — for the same term, all over again.</p>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <div id="app"></div>
+  </div>
+
+  <div class="wrap">
+    <main class="prose">
+      <h2><span class="num">01</span>What the grace period actually is</h2>
+      <p>When your CD hits its maturity date, the term is over — but the money doesn't automatically come back to you. Instead, nearly every bank starts a short <span class="k">grace period</span> — typically 7 to 10 days, sometimes as little as 1 — during which you can withdraw the money, move it to another bank, change the term, or add funds, all without penalty. It is the only scheduled moment in a CD's life when the exit is free.</p>
+      <p>The catch: the window opens automatically and closes automatically. Nothing dramatic happens to remind you — which is exactly why it gets missed.</p>
+
+      <h2><span class="num">02</span>The auto-renewal default works for the bank, not you</h2>
+      <div class="callout">
+        <span class="tag">Doing nothing is a decision</span>
+        If the grace period ends and you've done nothing, the bank renews your CD — same term, whatever rate they're offering that day. If you opened the CD during a promo, the renewal usually lands on the standard rate, which can be a full point or more lower. Banks design the default around inertia; the renewal notice is legally required, but acting on it isn't.
+      </div>
+      <p>rates moved a lot since the 2024–25 highs. A CD that earned 5% can quietly renew near 3% — on a $25,000 balance over 12 months that's roughly $500 of interest gone for not sending one transfer.</p>
+
+      <h2><span class="num">03</span>What to do during the window</h2>
+      <p>Four moves, all penalty-free while it's open: take the cash out; transfer to a better CD or high-yield savings account at any bank; renew but change the term to match when you'll actually need the money; or add funds if you're keeping it. The comparison field in the tool above does the only math that matters: rate difference × balance × term. If the gain is bigger than the hassle, move.</p>
+      <p>One practical note: opening the destination account BEFORE maturity makes the transfer same-week instead of racing the window.</p>
+
+      <h2><span class="num">04</span>Missed the window? The penalty math, honestly</h2>
+      <p>Early-withdrawal penalties usually run 3–12 months of interest depending on term length. That sounds disqualifying, but it's just arithmetic: if the penalty costs you four months of old interest and a better rate earns it back in three, breaking the CD wins. Where it usually doesn't win is late in the term — most of the interest is already yours and the clock is nearly done. Run both numbers before deciding; the bank will quote the exact penalty if you ask.</p>
+      <p>More money-deadline tools: <a href="https://ababa1326.github.io/zeroends/">ZeroEnds</a> (your 0% APR cliff) and <a href="https://ababa1326.github.io/reportslow/">ReportsLow</a> (what your credit card reports to the bureaus) — <a href="https://ababa1326.github.io/">all tools</a>.</p>
+    </main>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <p style="font-weight:600;color:var(--ink);">GraceWindow — a free tool, nothing to install.</p>
+      <p class="disc">This is an educational tool, not financial advice. Grace period lengths and penalties vary by bank and account agreement — confirm yours with your bank. Rate comparison assumes simple interest over the term entered.</p>
+    </div>
+  </footer>
+
+<script>
+(function () {
+  function fmt(n) {
+    if (n === null || n === undefined || isNaN(n)) return "\u2014";
+    return "$" + Math.round(n).toLocaleString("en-US");
+  }
+  function withCommas(raw) {
+    if (raw === "" || raw === null) return "";
+    var parts = raw.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+  }
+  function todayLocal() {
+    var d = new Date();
+    d.setHours(0,0,0,0);
+    return d;
+  }
+  function parseLocalDate(iso) {
+    return iso ? new Date(iso + "T00:00:00") : null;
+  }
+  function fmtDate(d) {
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }
+  function addDays(date, days) {
+    return new Date(date.getTime() + days * 86400000);
+  }
+  function dayDiff(later, earlier) {
+    return Math.round((later - earlier) / 86400000);
+  }
+  function pluralDays(n) {
+    return n === 1 ? "day" : "days";
+  }
+  function cleanRate(n) {
+    return n.toFixed(2).replace(/\.?0+$/, "");
+  }
+  function pad2(n) {
+    return (n < 10 ? "0" : "") + n;
+  }
+  function icsDate(d) {
+    return d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate());
+  }
+
+  var state = {
+    balance: "",
+    maturity: "",
+    graceDays: "10",
+    renewal: "",
+    best: "",
+    term: "12"
+  };
+  var app = document.getElementById("app");
+
+  app.innerHTML = ''
+    + '<div class="calc">'
+    +   '<div class="calc-grid">'
+    +     '<div class="field">'
+    +       '<label for="f-balance">CD balance</label>'
+    +       '<div class="input-wrap"><span class="pre">$</span>'
+    +         '<input id="f-balance" class="input-mono" inputmode="decimal" placeholder="25,000" autocomplete="off"></div>'
+    +     '</div>'
+    +     '<div class="field">'
+    +       '<label for="f-maturity">Maturity date <span class="hint">— on your statement or the bank\'s app</span></label>'
+    +       '<input id="f-maturity" type="date" class="input-mono">'
+    +     '</div>'
+    +     '<div class="field full">'
+    +       '<label for="f-grace">Grace period (days) <span class="hint">— ask your bank; 7–10 days is typical, some give fewer</span></label>'
+    +       '<input id="f-grace" type="number" min="1" max="30" step="1" value="10" class="input-mono">'
+    +     '</div>'
+    +     '<div class="field full">'
+    +       '<label>Optional: is renewing even worth it?</label>'
+    +       '<div class="rate-grid">'
+    +         '<div><label for="f-renewal">Renewal APY %</label>'
+    +           '<div class="input-wrap"><input id="f-renewal" type="number" min="0" step="0.01" placeholder="3.80" class="input-mono"><span class="post">%</span></div></div>'
+    +         '<div><label for="f-best">Best APY you can get %</label>'
+    +           '<div class="input-wrap"><input id="f-best" type="number" min="0" step="0.01" placeholder="4.60" class="input-mono"><span class="post">%</span></div></div>'
+    +         '<div><label for="f-term">Term (months)</label>'
+    +           '<input id="f-term" type="number" min="1" step="1" value="12" class="input-mono"></div>'
+    +       '</div>'
+    +     '</div>'
+    +   '</div>'
+    +   '<div class="result empty" id="f-result" role="status" aria-live="polite"></div>'
+    + '</div>'
+    + '<div class="timeline">'
+    +   '<div class="tl-track" id="f-timeline"></div>'
+    + '</div>';
+
+  var resultEl = document.getElementById("f-result");
+  var timelineEl = document.getElementById("f-timeline");
+
+  function values() {
+    var maturity = parseLocalDate(state.maturity);
+    var graceDays = parseInt(state.graceDays, 10);
+    if (isNaN(graceDays)) graceDays = 10;
+    graceDays = Math.max(1, Math.min(30, graceDays));
+    return {
+      balance: parseFloat(state.balance) || 0,
+      maturity: maturity,
+      graceDays: graceDays,
+      graceEnd: maturity ? addDays(maturity, graceDays) : null,
+      renewal: state.renewal === "" ? null : parseFloat(state.renewal),
+      best: state.best === "" ? null : parseFloat(state.best),
+      term: state.term === "" ? null : parseInt(state.term, 10)
+    };
+  }
+
+  function rateComparison(v) {
+    if (v.balance <= 0 || v.renewal === null || isNaN(v.renewal) ||
+        v.best === null || isNaN(v.best) || v.term === null || isNaN(v.term) || v.term <= 0) {
+      return "";
+    }
+    var gain = v.balance * (v.best - v.renewal) / 100 * v.term / 12;
+    if (gain > 0) {
+      return '<div class="est-note">Moving ' + fmt(v.balance) + ' from ' + cleanRate(v.renewal)
+        + '% to ' + cleanRate(v.best) + '% is worth about <b>' + fmt(gain)
+        + '</b> in extra interest over the ' + v.term + '-month term.</div>';
+    }
+    return '<div class="est-note">At those rates, renewing looks competitive — just confirm the renewal rate is for the same term, not a teaser.</div>';
+  }
+
+  function downloadReminderICS(maturity) {
+    var remind = addDays(maturity, -2);
+    var stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    var lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//GraceWindow//CD Maturity Reminder//EN",
+      "BEGIN:VEVENT",
+      "UID:gracewindow-" + Date.now() + "@gracewindow",
+      "DTSTAMP:" + stamp,
+      "DTSTART;VALUE=DATE:" + icsDate(remind),
+      "SUMMARY:CD matures in 2 days \u2014 shop rates, grace window opens " + fmtDate(maturity),
+      "DESCRIPTION:Shop rates before your CD grace window opens. Free calculator: https://ababa1326.github.io/gracewindow/",
+      "END:VEVENT",
+      "END:VCALENDAR"
+    ];
+    var blob = new Blob([lines.join("\r\n") + "\r\n"], { type: "text/calendar" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "cd-maturity-2-day-reminder.ics";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+
+  function renderTimeline() {
+    var v = values();
+    if (!v.maturity) {
+      timelineEl.innerHTML = '<div class="tl-fill"></div>'
+        + '<div class="tl-node today" style="left:0%"></div>'
+        + '<div class="tl-node" style="left:58%"></div>'
+        + '<div class="tl-node warning" style="left:100%"></div>'
+        + '<div class="tl-lab at-start"><span class="d">Today</span><span class="t">enter maturity above</span></div>'
+        + '<div class="tl-lab at-mid" style="left:58%"><span class="d">Maturity</span><span class="t">grace window opens</span></div>'
+        + '<div class="tl-lab at-end"><span class="d">Grace ends</span><span class="t">locks for another term</span></div>';
+      return;
+    }
+
+    var today = todayLocal();
+    var rangeStart = new Date(Math.min(today.getTime(), addDays(v.maturity, -30).getTime()));
+    var rangeMs = Math.max(86400000, v.graceEnd - rangeStart);
+    var maturityPos = Math.max(0, Math.min(100, (v.maturity - rangeStart) / rangeMs * 100));
+    var todayInRange = today >= rangeStart && today <= v.graceEnd;
+    var todayPos = Math.max(0, Math.min(100, (today - rangeStart) / rangeMs * 100));
+    var fill = today > v.graceEnd ? 100 : todayPos;
+
+    timelineEl.innerHTML = '<div class="tl-fill" style="width:' + fill + '%"></div>'
+      + (todayInRange ? '<div class="tl-node today" style="left:' + todayPos + '%"></div>' : '')
+      + '<div class="tl-node" style="left:' + maturityPos + '%"></div>'
+      + '<div class="tl-node warning" style="left:100%"></div>'
+      + '<div class="tl-lab at-start"><span class="d">Today</span><span class="t">' + fmtDate(today) + '</span></div>'
+      + '<div class="tl-lab at-mid" style="left:' + maturityPos + '%"><span class="d">' + fmtDate(v.maturity) + '</span><span class="t">grace window opens</span></div>'
+      + '<div class="tl-lab at-end"><span class="d">' + fmtDate(v.graceEnd) + '</span><span class="t">locks for another term</span></div>';
+  }
+
+  function render() {
+    renderTimeline();
+    var v = values();
+    if (v.balance <= 0 || !v.maturity) {
+      resultEl.className = "result empty";
+      resultEl.innerHTML = '<div class="result-label">Waiting on your numbers</div>'
+        + '<div class="result-main">Enter your CD and its maturity date to see your window.</div>';
+      return;
+    }
+
+    var today = todayLocal();
+    var daysToMaturity = dayDiff(v.maturity, today);
+    var daysLeftInWindow = dayDiff(v.graceEnd, today);
+    var comparison = rateComparison(v);
+    var html = "";
+
+    if (daysToMaturity > 0) {
+      resultEl.className = "result";
+      html = '<div class="result-label">Window opens soon</div>'
+        + '<div class="result-main">Your CD matures <span class="amt">' + fmtDate(v.maturity)
+        + '</span> — <b>' + daysToMaturity + ' ' + pluralDays(daysToMaturity)
+        + '</b> from now. Your penalty-free window: ' + fmtDate(v.maturity) + ' → ' + fmtDate(v.graceEnd) + '.</div>'
+        + '<div class="result-sub">Shop rates BEFORE maturity so you can move the moment the window opens. Decide in the window, not after.</div>'
+        + comparison;
+      if (daysToMaturity > 2) {
+        html += '<button class="ics-btn" id="f-ics" type="button">📅 Remind me 2 days before maturity</button>'
+          + '<span class="ics-hint">One-time calendar event — Google, Apple, Outlook. Nothing leaves your browser.</span>';
+      }
+    } else if (daysLeftInWindow >= 0) {
+      resultEl.className = "result over";
+      html = '<div class="result-label">Your window is OPEN</div>'
+        + '<div class="result-main">You have <span class="amt">' + daysLeftInWindow + ' '
+        + pluralDays(daysLeftInWindow) + '</span> to move penalty-free — it closes ' + fmtDate(v.graceEnd) + '.</div>'
+        + '<div class="result-sub">Withdraw, transfer to a better rate, change the term, or add funds — all free until the window closes. After that you\'re locked in for another full term.</div>'
+        + comparison;
+    } else {
+      resultEl.className = "result over";
+      html = '<div class="result-label">The window has closed</div>'
+        + '<div class="result-main">Your CD auto-renewed around ' + fmtDate(v.graceEnd) + ' and is locked for the new term.</div>'
+        + '<div class="result-sub">Exiting now means an early-withdrawal penalty (commonly several months of interest). Sometimes that\'s still worth paying for a much better rate — see section 04 below — but run the numbers first.</div>'
+        + comparison;
+    }
+    resultEl.innerHTML = html;
+  }
+
+  document.getElementById("f-balance").addEventListener("input", function (e) {
+    state.balance = e.target.value.replace(/[^0-9.]/g, "");
+    e.target.value = withCommas(state.balance);
+    render();
+  });
+  document.getElementById("f-maturity").addEventListener("input", function (e) {
+    state.maturity = e.target.value;
+    render();
+  });
+  document.getElementById("f-grace").addEventListener("input", function (e) {
+    state.graceDays = e.target.value;
+    render();
+  });
+  document.getElementById("f-renewal").addEventListener("input", function (e) {
+    state.renewal = e.target.value;
+    render();
+  });
+  document.getElementById("f-best").addEventListener("input", function (e) {
+    state.best = e.target.value;
+    render();
+  });
+  document.getElementById("f-term").addEventListener("input", function (e) {
+    state.term = e.target.value;
+    render();
+  });
+  resultEl.addEventListener("click", function (e) {
+    var btn = e.target.closest("#f-ics");
+    if (!btn) return;
+    var v = values();
+    if (v.maturity) downloadReminderICS(v.maturity);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
